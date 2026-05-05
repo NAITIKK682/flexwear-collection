@@ -42,6 +42,14 @@ pids/
 coverage/
 .nyc_output/
 
+# Vite-specific
+client/dist/
+client/.vite/
+
+# Server specific
+server/node_modules/
+server/dist/
+
 # Misc
 .cache/
 .parcel-cache/

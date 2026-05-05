@@ -1,27 +1,39 @@
 import api from './api';
 
 const login = async (credentials) => {
-  return api.post('/auth/login', credentials);
+  const response = await api.post('/auth/login', credentials);
+  if (response.data.token) {
+    localStorage.setItem('token', response.data.token);
+  }
+  return response.data;
 };
 
 const register = async (userData) => {
-  return api.post('/auth/register', userData);
+  const response = await api.post('/auth/register', userData);
+  if (response.data.token) {
+    localStorage.setItem('token', response.data.token);
+  }
+  return response.data;
 };
 
 const logout = async () => {
-  return api.post('/auth/logout');
+  const response = await api.post('/auth/logout');
+  return response.data;
 };
 
 const getMe = async () => {
-  return api.get('/auth/me');
+  const response = await api.get('/auth/me');
+  return response.data;
 };
 
 const updateProfile = async (formData) => {
-  return api.put('/auth/me', formData);
+  const response = await api.put('/auth/me', formData);
+  return response.data;
 };
 
 const changePassword = async (passwords) => {
-  return api.put('/auth/change-password', passwords);
+  const response = await api.put('/auth/change-password', passwords);
+  return response.data;
 };
 
 export default {

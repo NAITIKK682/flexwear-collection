@@ -10,30 +10,48 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // ✅ GET CURRENT USER
   const fetchUser = async () => {
+    const token = localStorage.getItem('token');
+    console.log('🔍 fetchUser: Token exists?', !!token);
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
-      const response = await authService.getMe();
-      setUser(response.data?.data || response.data?.user || null);
+      const res = await authService.getMe();
+      const userData = res?.user;
+      const normalizedUser = userData ? { ...userData, role: userData.role?.toLowerCase() } : null;
+      console.log('🔍 AUTH RESPONSE:', res);
+      console.log('🔍 NORMALIZED USER ROLE:', normalizedUser?.role);
+      setUser(normalizedUser);
       setError(null);
     } catch (err) {
+      console.log('❌ fetchUser error:', err.response?.status, err.response?.data?.message);
       setUser(null);
-      setError(err?.response?.data?.message || err.message || 'Unable to fetch user');
+      localStorage.removeItem('token'); // Clear invalid token
+      if (err.response?.status !== 401) {
+        setError(err?.response?.data?.message || err.message);
+      } else {
+        console.log('🔐 401 - cleared token & logged out');
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ LOGIN
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const response = await authService.login({ email, password });
-      const currentUser = response.data?.data || response.data?.user || null;
-      setUser(currentUser);
+      const res = await authService.login({ email, password });
+      setUser(res?.user || null);
       setError(null);
-      return response;
+      return res;
     } catch (err) {
-      const message = err?.response?.data?.message || err.message || 'Login failed';
+      const message = err?.response?.data?.message || err.message;
       setError(message);
       throw err;
     } finally {
@@ -41,16 +59,16 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ✅ REGISTER
   const register = async (userData) => {
     setLoading(true);
     try {
-      const response = await authService.register(userData);
-      const registeredUser = response.data?.data || response.data?.user || null;
-      setUser(registeredUser);
+      const res = await authService.register(userData);
+      setUser(res?.user || null);
       setError(null);
-      return response;
+      return res;
     } catch (err) {
-      const message = err?.response?.data?.message || err.message || 'Registration failed';
+      const message = err?.response?.data?.message || err.message;
       setError(message);
       throw err;
     } finally {
@@ -58,11 +76,12 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ✅ LOGOUT
   const logout = async () => {
     try {
       await authService.logout();
     } catch (err) {
-      console.error('Logout failed', err);
+      console.error(err);
     } finally {
       setUser(null);
       setError(null);
@@ -70,15 +89,15 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ✅ UPDATE PROFILE
   const updateProfile = async (formData) => {
     try {
-      const response = await authService.updateProfile(formData);
-      const updatedUser = response.data?.data || response.data?.user || null;
-      setUser(updatedUser);
+      const res = await authService.updateProfile(formData);
+      setUser(res?.user || null);
       setError(null);
-      return response;
+      return res;
     } catch (err) {
-      const message = err?.response?.data?.message || err.message || 'Update failed';
+      const message = err?.response?.data?.message || err.message;
       setError(message);
       throw err;
     }
@@ -92,7 +111,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: Boolean(user),
+        isAuthenticated: !!user,
         loading,
         error,
         login,
@@ -106,4 +125,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-

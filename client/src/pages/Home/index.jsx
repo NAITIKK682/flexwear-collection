@@ -1,5 +1,3 @@
-// Home page placeholder
-export default function Home() {
-  return <div>Home Page</div>;
-}
+import Home from './Home';
+export default Home;
 

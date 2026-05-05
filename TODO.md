@@ -1,16 +1,11 @@
-# Layout Components Implementation (Phase 9)
+# FLEXWEAR Git Update TODO
 
-## Navbar (9.1) - COMPLETE
-- [x] 1. Create `client/src/hooks/useCart.js` hook
-- [x] 2. Create `client/src/components/layout/Navbar.jsx` component  
-- [x] 3. Update `client/src/components/layout/index.js` to export Navbar
-- [x] 4. Test and verify (files functional, styles responsive)
-- [ ] 5. Integrate into App (future phase)
+## Steps from approved plan:
 
-## Footer (9.2) - COMPLETE
-- [x] 1. Create `client/src/components/layout/Footer.jsx` component
-- [x] 2. Update `client/src/components/layout/index.js` to export Footer
-- [x] 3. Test and verify
-
-Progress updated after each step.
+### 1. [✅] Create/Update TODO.md with steps
+### 2. [✅] Update .gitignore with project-specific ignores (Vite/server)
+### 3. [✅] git add . (staged all changes)
+### 4. [ ] git commit -m "Update .gitignore and add all project files"
+### 5. [ ] git push origin blackboxai/layout-components
+### 6. [ ] Verify clean status and completion
 

@@ -8,10 +8,13 @@ const { body, validationResult } = require('express-validator');
 // @desc    Register user
 // @route   POST /api/auth/register
 const registerUser = asyncHandler(async (req, res) => {
+  console.log('📥 Register request received:', req.body.email);
+  
   const { name, email, password } = req.body;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
+    console.log('❌ User already exists:', email);
     return sendError(res, 400, 'User already exists');
   }
 
@@ -21,6 +24,8 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     role: 'user'
   });
+  
+  console.log('✅ User created:', user._id);
 
   sendToken(user, 201, res, 'User registered successfully');
 });
