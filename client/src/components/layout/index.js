@@ -1,4 +1,6 @@
-// Layout components placeholder
+// Layout components
 export { default as Layout } from './Layout';
 export { default as ProtectedRoute } from './ProtectedRoute';
+export { default as Navbar } from './Navbar';
+export { default as Footer } from './Footer';
 
