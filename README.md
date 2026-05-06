@@ -54,36 +54,164 @@ Built for scalability with RESTful APIs, JWT authentication, Cloudinary image st
 ## 📁 Folder Structure
 
 ```
-FLEXWEAR/
-├── client/                    # React Vite frontend
-│   ├── public/               # Static assets (images, favicon)
+FLEXWEAR (root)
+├── client/
+│   ├── public/
+│   │   ├── images/
+│   │   │   └── hero.png
+│   │   └── vite.svg
 │   ├── src/
-│   │   ├── components/       # Reusable UI (Navbar, ProductCard, CartItem)
-│   │   ├── context/          # Global state (AuthContext, CartContext)
-│   │   ├── hooks/            # Custom hooks (useAuth, useCart)
-│   │   ├── pages/            # Page components (Home, Shop, Cart, Admin, Profile)
-│   │   ├── services/         # API service wrappers (authService, productService)
-│   │   └── utils/            # Helpers/constants
-│   ├── package.json          # Frontend deps
-│   └── tailwind.config.js    # Tailwind customization
-├── server/                   # Node Express backend
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── assets/
+│   │   │   └── images/
+│   │   │       └── placeholder.jpg
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   │   ├── index.js
+│   │   │   │   ├── Loader.jsx
+│   │   │   │   └── Toast.jsx
+│   │   │   ├── cart/
+│   │   │   │   ├── CartItem.jsx
+│   │   │   │   └── CartSummary.jsx
+│   │   │   ├── layout/
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   ├── ProtectedRoute.jsx
+│   │   │   │   └── index.js
+│   │   │   ├── product/
+│   │   │   │   ├── ProductCard.jsx
+│   │   │   │   ├── ProductFilter.jsx
+│   │   │   │   └── ProductGrid.jsx
+│   │   │   └── ProtectedRoute.jsx
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── CartContext.jsx
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js
+│   │   │   └── useCart.js
+│   │   ├── pages/
+│   │   │   ├── Admin/
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── OrderManagement.jsx
+│   │   │   │   ├── ProductManagement.jsx
+│   │   │   │   ├── UserManagement.jsx
+│   │   │   │   └── index.jsx
+│   │   │   ├── Auth/
+│   │   │   │   ├── Auth.jsx
+│   │   │   │   ├── LoginForm.jsx
+│   │   │   │   ├── RegisterForm.jsx
+│   │   │   │   └── index.jsx
+│   │   │   ├── Cart/
+│   │   │   │   ├── Cart.jsx
+│   │   │   │   └── index.jsx
+│   │   │   ├── Checkout/
+│   │   │   │   ├── Checkout.jsx
+│   │   │   │   ├── OrderSuccess.jsx
+│   │   │   │   ├── PaymentGateway.jsx
+│   │   │   │   └── index.jsx
+│   │   │   ├── Home/
+│   │   │   │   ├── Categories.jsx
+│   │   │   │   ├── FeaturedProducts.jsx
+│   │   │   │   ├── HeroSection.jsx
+│   │   │   │   ├── Home.jsx
+│   │   │   │   ├── Newsletter.jsx
+│   │   │   │   └── index.jsx
+│   │   │   ├── ProductDetail/
+│   │   │   │   └── index.jsx
+│   │   │   ├── Profile/
+│   │   │   │   ├── Addresses.jsx
+│   │   │   │   ├── MyOrders.jsx
+│   │   │   │   ├── OrderDetails.jsx
+│   │   │   │   ├── Overview.jsx
+│   │   │   │   ├── PersonalDetails.jsx
+│   │   │   │   ├── Profile.jsx
+│   │   │   │   └── index.jsx
+│   │   │   └── Shop/
+│   │   │       ├── Accessories.jsx
+│   │   │       ├── Kids.jsx
+│   │   │       ├── Men.jsx
+│   │   │       ├── Shop.jsx
+│   │   │       ├── Women.jsx
+│   │   │       └── index.jsx
+│   │   ├── services/
+│   │   │   ├── addressService.js
+│   │   │   ├── adminService.js
+│   │   │   ├── api.js
+│   │   │   ├── authService.js
+│   │   │   ├── cartService.js
+│   │   │   ├── orderService.js
+│   │   │   ├── paymentService.js
+│   │   │   └── productService.js
+│   │   └── utils/
+│   │       ├── constants.js
+│   │       ├── formatters.js
+│   │       └── validators.js
+│   ├── index.html
+│   ├── package.json
+│   ├── postcss.config.js
+│   └── tailwind.config.js
+│   └── vite.config.js
+├── server/
 │   ├── src/
-│   │   ├── config/           # DB, Cloudinary, JWT setup
-│   │   ├── controllers/      # Business logic (authController, productController)
-│   │   ├── middleware/       # Auth, rate limiting
-│   │   ├── models/           # Mongoose schemas (Product, User, Order)
-│   │   ├── routes/           # API routes (auth.routes.js, productRoutes.js)
-│   │   ├── utils/            # Helpers (asyncHandler, apiResponse)
-│   │   └── validators/       # Input validation schemas
-│   ├── server.js             # Server entry point
-│   └── package.json          # Backend deps
-├── README.md                 # This file!
+│   │   ├── app.js
+│   │   ├── config/
+│   │   │   ├── cloudinary.js
+│   │   │   ├── database.js
+│   │   │   ├── db.js
+│   │   │   └── jwt.js
+│   │   ├── controllers/
+│   │   │   ├── addressController.js
+│   │   │   ├── authController.js
+│   │   │   ├── cartController.js
+│   │   │   ├── orderController.js
+│   │   │   ├── paymentController.js
+│   │   │   └── productController.js
+│   │   ├── middleware/
+│   │   │   ├── auth.js
+│   │   │   └── rateLimiter.js
+│   │   ├── models/
+│   │   │   ├── Cart.js
+│   │   │   ├── Order.js
+│   │   │   ├── Product.js
+│   │   │   ├── Review.js
+│   │   │   ├── User.js
+│   │   │   └── index.js
+│   │   ├── routes/
+│   │   │   ├── address.routes.js
+│   │   │   ├── auth.routes.js
+│   │   │   ├── authRoutes.js
+│   │   │   ├── cart.routes.js
+│   │   │   ├── cartRoutes.js
+│   │   │   ├── order.routes.js
+│   │   │   ├── orderRoutes.js
+│   │   │   ├── payment.routes.js
+│   │   │   ├── paymentRoutes.js
+│   │   │   ├── product.routes.js
+│   │   │   └── productRoutes.js
+│   │   ├── utils/
+│   │   │   ├── apiResponse.js
+│   │   │   ├── asyncHandler.js
+│   │   │   └── jwt.js
+│   │   └── validators/
+│   │       ├── addressValidator.js
+│   │       ├── authValidator.js
+│   │       ├── cartValidator.js
+│   │       └── productValidator.js
+│   ├── server.js
+│   └── package.json
 ├── .gitignore
-└── TODO.md
+├── package.json
+├── README.md
+└── client/src/utils/TODO.md
 ```
 
-**client/src**: Organized by feature (pages/components/services) for scalability.  
-**server/src**: MVC pattern (models/views/controllers/routes) with separation of concerns.
+**Notes**: 
+- Client: Feature-based structure (components/pages/services/utils)
+- Server: MVC pattern with dedicated folders for config/middleware/etc.
+- New utilities added: `formatters.js`, `validators.js`, `Loader.jsx`, `Toast.jsx`
+
 
 ## 📄 Important Files
 

@@ -1,31 +1,51 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 function ProtectedRoute({ children, requireAdmin = false }) {
   const { user, isAuthenticated, loading } = useContext(AuthContext);
   const location = useLocation();
 
-  // 1. Loading state handle (prevents redirect loops & blank screens)
+  // 🔍 DEBUG LOGS
+  useEffect(() => {
+    console.log('🛡️ === ProtectedRoute Check ===');
+    console.log('loading:', loading);
+    console.log('isAuthenticated:', isAuthenticated);
+    console.log('user:', user);
+    console.log('user.role:', user?.role);
+    console.log('requireAdmin:', requireAdmin);
+    console.log('role === "admin":', user?.role === 'admin');
+    console.log('role check result:', user?.role?.toLowerCase()?.trim() === 'admin');
+    console.log('===========================');
+  }, [user, isAuthenticated, loading, requireAdmin]);
+
+  // 1. Loading state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-slate-500">
-        Verifying access...
+        🔐 Loading...
       </div>
     );
   }
 
-  // 2. Redirect to login if not authenticated
+  // 2. Not authenticated
   if (!isAuthenticated || !user) {
+    console.warn('🚫 NOT AUTHENTICATED → Redirect to /auth');
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  // 3. Admin check (role already normalized to lowercase in AuthContext)
-  if (requireAdmin && user?.role !== 'admin') {
-    return <Navigate to="/" replace />;
+  // 3. Admin check (with normalization)
+  if (requireAdmin) {
+    const isAdmin = user?.role?.toLowerCase()?.trim() === 'admin';
+    console.log(' isAdmin check:', isAdmin, '(role was:', user?.role + ')');
+    
+    if (!isAdmin) {
+      console.warn('🚫 NOT ADMIN → Redirect to /');
+      return <Navigate to="/" replace />;
+    }
   }
 
-  // 4. Render protected content
+  console.log('✅ Access granted!');
   return children;
 }
 

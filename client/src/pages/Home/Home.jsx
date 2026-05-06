@@ -5,14 +5,22 @@ import Newsletter from './Newsletter';
 
 const Home = () => {
   return (
-    <div>
+    <main className="flex flex-col">
+
+      {/* ── 1. Hero ─────────────────────────────────────────── */}
       <HeroSection />
+
+      {/* ── 2. Categories — dark contrast break ─────────────── */}
       <Categories />
+
+      {/* ── 3. Featured Products — white section ─────────────── */}
       <FeaturedProducts />
+
+      {/* ── 4. Newsletter — deep dark close ──────────────────── */}
       <Newsletter />
-    </div>
+
+    </main>
   );
 };
 
 export default Home;
-
