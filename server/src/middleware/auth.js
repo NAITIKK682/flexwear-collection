@@ -87,4 +87,3 @@ const errorHandler = (err, req, res, next) => {
 };
 
 module.exports = { protect, requireRole, errorHandler };
-

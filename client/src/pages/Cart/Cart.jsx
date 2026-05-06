@@ -1,73 +1,115 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
 import CartItem from '../../components/cart/CartItem';
 import CartSummary from '../../components/cart/CartSummary';
-// No import needed, use direct path
+
+/**
+ * @file Cart.jsx
+ * @description Enterprise-grade Shopping Cart view with premium UI/UX, 
+ * performance optimizations, and enhanced accessibility.
+ */
 
 const Cart = () => {
   const { cartItems, cartTotal, loading } = useCart();
 
+  // Memoize item count for performance and visual consistency
+  const itemCount = useMemo(() => cartItems.length, [cartItems]);
+
+  // Loading State - Enhanced with Skeleton-like feel and premium centering
   if (loading) {
     return (
-      <div className="min-h-screen py-8 px-4 md:px-8 bg-slate-50 flex items-center justify-center">
-        <div className="text-lg text-gray-600">Loading cart...</div>
+      <div className="min-h-screen py-8 px-4 md:px-8 bg-slate-50 flex flex-col items-center justify-center animate-pulse">
+        <div className="w-12 h-12 border-4 border-slate-200 border-t-primary rounded-full animate-spin mb-4" />
+        <div className="text-lg font-medium text-slate-600 tracking-wide">
+          Syncing your selection...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="py-8 px-4 md:px-8 bg-slate-50 min-h-screen">
+    <div className="py-12 px-4 md:px-8 bg-slate-50 min-h-screen transition-colors duration-500">
       <div className="max-w-7xl mx-auto">
-        {/* Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-slate-700 bg-clip-text text-transparent mb-4">
-            Shopping Cart
+        {/* Title Section - Premium Typography & SEO Semantic Structure */}
+        <header className="text-center mb-16">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-br from-gray-900 via-slate-800 to-slate-600 bg-clip-text text-transparent mb-6">
+            Your Shopping Bag
           </h1>
-          {cartItems.length === 0 && (
-            <p className="text-xl text-gray-600">No items in your cart</p>
+          <div className="h-1.5 w-24 bg-primary mx-auto rounded-full mb-6 shadow-sm" />
+          {itemCount === 0 && (
+            <p className="text-xl text-slate-500 font-medium">Curate your next look.</p>
           )}
-        </div>
+        </header>
 
-        {cartItems.length === 0 ? (
-          /* Empty State */
-          <div className="text-center py-20">
-            <div className="w-64 h-64 bg-gray-200 rounded-3xl shadow-2xl mb-8 opacity-50 mx-auto flex items-center justify-center text-4xl">
-              🛒
+        {itemCount === 0 ? (
+          /* Empty State - Narrative-driven Emotional Design */
+          <div className="text-center py-24 px-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl max-w-3xl mx-auto transform transition-all">
+            <div className="w-48 h-48 bg-slate-50 rounded-full shadow-inner mb-10 mx-auto flex items-center justify-center text-6xl group hover:scale-105 transition-transform duration-500">
+              <span className="grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all">🛍️</span>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Your cart is empty
+            <h2 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">
+              The bag is feeling light
             </h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-md mx-auto">
-              Looks like you haven't added anything to your cart yet.
+            <p className="text-lg text-slate-500 mb-10 max-w-md mx-auto leading-relaxed">
+              Discover pieces designed for your lifestyle. Start adding items to bring your style to life.
             </p>
             <Link
               to="/men"
-              className="inline-block bg-primary hover:bg-primary-dark text-white font-bold py-4 px-10 rounded-2xl text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200"
+              className="inline-flex items-center justify-center bg-gray-900 hover:bg-black text-white font-bold py-5 px-12 rounded-2xl text-lg shadow-2xl hover:shadow-primary/20 transform hover:-translate-y-1.5 transition-all duration-300 active:scale-95"
             >
-              Continue Shopping
+              Start Exploring
             </Link>
           </div>
         ) : (
-          /* Cart with Items */
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items - Left Column */}
-            <section className="lg:col-span-2">
-              <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Your Items ({cartItems.length})
-                </h2>
-                <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+          /* Cart Content - Scalable Grid Layout */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            {/* Cart Items List - Left Column (8/12) */}
+            <main className="lg:col-span-8 space-y-8">
+              <section className="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-100 overflow-hidden">
+                <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    Review Selection
+                  </h2>
+                  <span className="px-4 py-1.5 bg-slate-100 text-slate-600 text-sm font-bold rounded-full border border-slate-200">
+                    {itemCount} {itemCount === 1 ? 'Item' : 'Items'}
+                  </span>
+                </div>
+                
+                <div className="p-2 md:p-8 space-y-2 max-h-[75vh] overflow-y-auto custom-scrollbar">
                   {cartItems.map((item) => (
-                    <CartItem key={item.id} item={item} />
+                    <div 
+                      key={item.id} 
+                      className="group transition-all duration-300 rounded-2xl hover:bg-slate-50/50"
+                    >
+                      <CartItem item={item} />
+                    </div>
                   ))}
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {/* Cart Summary - Right Column */}
-            <aside className="lg:col-span-1">
-              <CartSummary cartTotal={cartTotal} />
+              {/* Trust signals / Brand Storytelling */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 text-center">
+                <div className="p-4">
+                  <p className="text-sm font-bold text-slate-800">Secure Checkout</p>
+                  <p className="text-xs text-slate-500">256-bit SSL Encryption</p>
+                </div>
+                <div className="p-4 border-x border-slate-100">
+                  <p className="text-sm font-bold text-slate-800">Free Returns</p>
+                  <p className="text-xs text-slate-500">30-day style guarantee</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-sm font-bold text-slate-800">Fast Shipping</p>
+                  <p className="text-xs text-slate-500">Global premium delivery</p>
+                </div>
+              </div>
+            </main>
+
+            {/* Cart Summary - Right Column (4/12) */}
+            <aside className="lg:col-span-4 sticky top-8">
+              <div className="transform transition-all duration-500">
+                <CartSummary cartTotal={cartTotal} />
+              </div>
             </aside>
           </div>
         )}
@@ -77,4 +119,3 @@ const Cart = () => {
 };
 
 export default Cart;
-

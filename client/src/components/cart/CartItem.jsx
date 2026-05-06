@@ -7,6 +7,12 @@ import {
 } from '@heroicons/react/24/outline';
 import { useCart } from '../../hooks/useCart';
 
+/**
+ * @file CartItem.jsx
+ * @description Enhanced production-grade cart item component with 
+ * premium micro-interactions, refined typography, and responsive grid logic.
+ */
+
 const CartItem = ({ item }) => {
   const { updateQuantity, removeFromCart } = useCart();
 
@@ -16,96 +22,115 @@ const CartItem = ({ item }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 group">
-      <div className="flex flex-col lg:flex-row gap-6 lg:items-center">
-        {/* Product Image */}
-        <Link to={`/product/${item.productId}`} className="flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
+    <div className="bg-white rounded-2xl p-5 md:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-500 border border-slate-100 group mb-4">
+      <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+        
+        {/* Product Image - Enhanced with sophisticated framing */}
+        <Link 
+          to={`/product/${item.productId}`} 
+          className="relative flex-shrink-0 group-hover:scale-[1.02] transition-transform duration-500 ease-out"
+        >
+          <div className="absolute inset-0 bg-slate-900/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <img
             src={item.image || '/assets/images/placeholder.jpg'}
             alt={item.name}
-            className="w-24 h-24 lg:w-28 lg:h-28 object-cover rounded-xl shadow-md hover:shadow-lg transition-shadow"
+            className="w-24 h-24 lg:w-32 lg:h-32 object-cover rounded-xl shadow-sm border border-slate-50"
           />
         </Link>
 
-        {/* Product Details */}
-        <div className="flex-1 min-w-0">
-          <Link to={`/product/${item.productId}`} className="block">
-            <h3 className="text-lg font-bold text-gray-900 hover:text-primary transition-colors line-clamp-2 mb-3">
-              {item.name}
-            </h3>
-          </Link>
+        {/* Product Details - Premium Typography & Spacing */}
+        <div className="flex-1 min-w-0 w-full">
+          <div className="flex justify-between items-start mb-2">
+            <Link to={`/product/${item.productId}`} className="block max-w-[85%]">
+              <h3 className="text-lg font-bold text-slate-900 hover:text-primary transition-colors line-clamp-1 tracking-tight">
+                {item.name}
+              </h3>
+            </Link>
+            
+            {/* Desktop Remove Button - Clean placement */}
+            <button
+              onClick={() => removeFromCart(item.id)}
+              className="hidden sm:flex group/remove p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300"
+              aria-label="Remove item"
+            >
+              <TrashIcon className="h-5 w-5 transform group-hover/remove:rotate-12 transition-transform" />
+            </button>
+          </div>
           
-          {/* Size & Color Badges */}
+          {/* Attributes - Subtler Color Palette */}
           <div className="flex flex-wrap gap-2 mb-6">
             {item.size && (
-              <span className="px-3 py-1.5 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full shadow-sm">
+              <span className="px-3 py-1 bg-slate-50 text-slate-600 text-xs font-bold uppercase tracking-wider rounded-md border border-slate-100">
                 Size: {item.size}
               </span>
             )}
             {item.color && (
-              <span className="px-3 py-1.5 bg-emerald-100 text-emerald-800 text-sm font-medium rounded-full shadow-sm">
+              <span className="px-3 py-1 bg-slate-50 text-slate-600 text-xs font-bold uppercase tracking-wider rounded-md border border-slate-100">
                 {item.color}
               </span>
             )}
           </div>
 
-          {/* Price & Controls */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-end">
-            {/* Item Total */}
-            <div className="text-2xl lg:text-3xl font-black text-primary drop-shadow-sm">
-              ₹{(item.price * item.quantity).toLocaleString()}
+          {/* Pricing & Controls Grid */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total</span>
+              <div className="text-2xl font-black text-slate-900 flex items-baseline gap-2">
+                ₹{(item.price * item.quantity).toLocaleString()}
+                <span className="text-xs font-medium text-slate-400 line-through decoration-slate-300">
+                  ₹{((item.price * 1.2) * item.quantity).toLocaleString()}
+                </span>
+              </div>
             </div>
             
-            {/* Quantity & Unit Price */}
-            <div className="flex flex-col sm:flex-row gap-4 items-end justify-between lg:justify-end lg:gap-6">
-              <span className="text-lg font-semibold text-gray-700 hidden sm:inline">
-                {item.price.toLocaleString()} × {item.quantity}
-              </span>
-              
-              {/* Enhanced Quantity Controls */}
-              <div className="flex items-center bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl p-1 shadow-inner hover:shadow-md transition-all duration-200">
+            <div className="flex items-center gap-6">
+              {/* Responsive Unit Price Label */}
+              <div className="hidden lg:block text-right">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Unit Price</p>
+                <p className="text-sm font-semibold text-slate-600">₹{item.price.toLocaleString()}</p>
+              </div>
+
+              {/* Enhanced Quantity Controls - Glassmorphism touch */}
+              <div className="flex items-center bg-slate-50 border border-slate-100 rounded-2xl p-1.5 shadow-inner">
                 <button
                   onClick={() => handleQuantityChange(-1)}
                   disabled={item.quantity <= 1}
-                  className="group/btn p-2.5 hover:bg-white hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all duration-200 flex-shrink-0"
-                  title="Decrease quantity"
+                  className="p-2 hover:bg-white hover:shadow-sm disabled:opacity-30 disabled:hover:bg-transparent rounded-xl transition-all duration-200 text-slate-500 active:scale-90"
+                  aria-label="Decrease quantity"
                 >
-                  <MinusCircleIcon className="h-5 w-5 text-gray-600 group-hover/btn:text-primary transition-colors" />
+                  <MinusCircleIcon className="h-5 w-5" />
                 </button>
                 
-                <span className="px-5 py-2.5 font-bold text-xl text-gray-900 bg-white rounded-lg shadow-sm min-w-[3rem] text-center border">
+                <span className="w-10 text-center font-bold text-slate-900 select-none">
                   {item.quantity}
                 </span>
                 
                 <button
                   onClick={() => handleQuantityChange(1)}
-                  className="group/btn p-2.5 hover:bg-white hover:shadow-md rounded-lg transition-all duration-200 flex-shrink-0"
-                  title="Increase quantity"
+                  className="p-2 hover:bg-white hover:shadow-sm rounded-xl transition-all duration-200 text-slate-500 active:scale-90"
+                  aria-label="Increase quantity"
                 >
-                  <PlusCircleIcon className="h-5 w-5 text-gray-600 group-hover/btn:text-primary transition-colors" />
+                  <PlusCircleIcon className="h-5 w-5" />
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Remove Button */}
-        <button
-          onClick={() => removeFromCart(item.id)}
-          className="group/remove flex-shrink-0 p-3 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-transparent hover:border-red-200"
-          title="Remove item"
-        >
-          <TrashIcon className="h-6 w-6 group-hover/remove:scale-110 transition-transform" />
-        </button>
-      </div>
-
-      {/* Mobile Unit Price */}
-      <div className="lg:hidden mt-3 pt-3 border-t border-gray-100 text-sm font-semibold text-gray-700">
-        ₹{item.price.toLocaleString()} × {item.quantity}
+        {/* Mobile-only Remove - Bottom Action Bar Style */}
+        <div className="sm:hidden w-full pt-4 border-t border-slate-50 flex justify-between items-center">
+           <span className="text-sm font-semibold text-slate-500">₹{item.price.toLocaleString()} per unit</span>
+           <button
+              onClick={() => removeFromCart(item.id)}
+              className="flex items-center gap-2 px-4 py-2 text-red-500 font-bold text-sm bg-red-50 rounded-xl"
+            >
+              <TrashIcon className="h-4 w-4" />
+              Remove
+            </button>
+        </div>
       </div>
     </div>
   );
 };
 
 export default CartItem;
-

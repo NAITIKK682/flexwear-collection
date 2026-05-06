@@ -3,6 +3,7 @@ const Razorpay = require('razorpay');
 const asyncHandler = require('../utils/asyncHandler');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const Order = require('../models/Order');
+const { validationResult } = require('express-validator'); // ✅ Consistent validation handling
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -10,6 +11,12 @@ const razorpay = new Razorpay({
 });
 
 const createRazorpayOrder = asyncHandler(async (req, res) => {
+  // Check for validation errors if any middleware is added later
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return sendError(res, 400, 'Validation failed', errors.array());
+  }
+
   const { amount, orderId } = req.body;
 
   if (!amount || typeof amount !== 'number' || amount <= 0) {
@@ -21,7 +28,7 @@ const createRazorpayOrder = asyncHandler(async (req, res) => {
   }
 
   const options = {
-    amount: Math.round(amount * 100),
+    amount: Math.round(amount * 100), // Convert to paise
     currency: 'INR',
     receipt: String(orderId),
     notes: {
@@ -51,6 +58,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
     return sendError(res, 400, 'Payment verification payload is incomplete');
   }
 
+  // Verify signature
   const generatedSignature = crypto
     .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
     .update(`${razorpay_order_id}|${razorpay_payment_id}`)
@@ -65,6 +73,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
     return sendError(res, 404, 'Order not found');
   }
 
+  // Update order status
   order.paymentStatus = 'paid';
   order.orderStatus = 'processing';
   order.paymentId = razorpay_payment_id;
@@ -79,6 +88,7 @@ const handleWebhook = asyncHandler(async (req, res) => {
     return res.status(400).send('Missing webhook signature');
   }
 
+  // Use rawBody for accurate signature verification
   const rawBody = req.rawBody ? req.rawBody.toString('utf8') : JSON.stringify(req.body);
   const expectedSignature = crypto
     .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
@@ -92,6 +102,7 @@ const handleWebhook = asyncHandler(async (req, res) => {
   const event = req.body.event;
   let orderId = null;
 
+  // Attempt to find orderId in notes or receipt
   if (req.body?.payload?.payment?.entity?.notes?.orderId) {
     orderId = req.body.payload.payment.entity.notes.orderId;
   }
@@ -109,16 +120,13 @@ const handleWebhook = asyncHandler(async (req, res) => {
     return res.status(404).send('Order not found');
   }
 
-  if (event === 'payment.captured') {
+  // Handle specific Razorpay events
+  if (event === 'payment.captured' || event === 'order.paid') {
     order.paymentStatus = 'paid';
     order.orderStatus = 'processing';
-    order.paymentId = req.body.payload.payment.entity.id;
+    order.paymentId = req.body.payload.payment?.entity?.id || req.body.payload.order?.entity?.id;
   } else if (event === 'payment.failed') {
     order.paymentStatus = 'failed';
-    order.orderStatus = 'pending';
-  } else if (event === 'order.paid') {
-    order.paymentStatus = 'paid';
-    order.orderStatus = 'processing';
   } else {
     return res.status(200).json({ success: true, message: 'Webhook event ignored' });
   }

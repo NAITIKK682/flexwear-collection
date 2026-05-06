@@ -16,9 +16,12 @@ const cancelOrder = async (id) => {
   return api.put(`/orders/${id}/cancel`);
 };
 
-export default {
+// Exporting as a named constant to match Checkout.jsx imports
+export const orderService = {
   createOrder,
   getMyOrders,
   getOrderById,
   cancelOrder,
 };
+
+export default orderService;

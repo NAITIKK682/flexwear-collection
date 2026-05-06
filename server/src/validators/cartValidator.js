@@ -1,4 +1,4 @@
-const { body, param } = require('express-validator');
+const { body, param, validationResult } = require('express-validator'); // ✅ Fix: Added missing validationResult import
 const asyncHandler = require('../utils/asyncHandler');
 const { sendError } = require('../utils/apiResponse');
 
@@ -57,4 +57,3 @@ module.exports = {
   cartItemIdValidator,
   mergeGuestCartValidator
 };
-

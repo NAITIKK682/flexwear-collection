@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import { createContext, useEffect, useState, useCallback, useMemo, useRef, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import authService from '../services/authService'
 
@@ -230,4 +230,13 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   )
+}
+
+// ✅ Fix: Add missing useAuth export to resolve "does not provide an export named 'useAuth'"
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
 }

@@ -2,7 +2,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
-const { protect } = require('../middleware/auth');
+const { validationResult } = require('express-validator');
 
 // 1. Get user cart
 const getCart = asyncHandler(async (req, res) => {
@@ -12,7 +12,7 @@ const getCart = asyncHandler(async (req, res) => {
   });
 
   if (!cart) {
-    cart = new Cart({ user: req.user._id });
+    cart = await Cart.create({ user: req.user._id, items: [] });
   }
 
   sendSuccess(res, 200, 'Cart fetched', cart);
@@ -20,6 +20,13 @@ const getCart = asyncHandler(async (req, res) => {
 
 // 2. Add to cart
 const addToCart = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Console log lagaya hai taaki aap terminal mein dekh sakein exact error kya hai
+    console.log("Validation Errors:", errors.array());
+    return sendError(res, 400, errors.array()[0].msg);
+  }
+
   const { productId, quantity = 1, size, color } = req.body;
 
   const product = await Product.findById(productId);
@@ -36,7 +43,6 @@ const addToCart = asyncHandler(async (req, res) => {
     cart = new Cart({ user: req.user._id });
   }
 
-  // Check if item exists
   const existingItemIndex = cart.items.findIndex(item => 
     item.product.toString() === productId && 
     item.size === size && 
@@ -44,26 +50,14 @@ const addToCart = asyncHandler(async (req, res) => {
   );
 
   if (existingItemIndex > -1) {
-    cart.items[existingItemIndex].quantity += quantity;
+    cart.items[existingItemIndex].quantity += Number(quantity);
   } else {
-    cart.items.push({ product: productId, quantity, size, color });
+    cart.items.push({ product: productId, quantity: Number(quantity), size, color });
   }
 
-  // Recalculate totals
-  let totalItems = 0;
-  let totalPrice = 0;
-  for (let item of cart.items) {
-    const prod = await Product.findById(item.product);
-    const price = prod.discountedPrice || prod.price;
-    totalPrice += price * item.quantity;
-    totalItems += item.quantity;
-  }
-  
-  cart.totalItems = totalItems;
-  cart.totalPrice = totalPrice;
+  // ✅ Optimization: Model ka pre-save middleware khud totals handle karega
   await cart.save();
-
-  await cart.populate('items.product', 'name price discountedPrice images');
+  await cart.populate('items.product', 'name price discountedPrice images stock');
   
   sendSuccess(res, 200, 'Added to cart', cart);
 });
@@ -71,39 +65,28 @@ const addToCart = asyncHandler(async (req, res) => {
 // 3. Update cart item
 const updateCartItem = asyncHandler(async (req, res) => {
   const { quantity } = req.body;
-  const itemId = req.params.itemId;
+  const itemId = req.params.itemId; // Note: Frontend should send the _id of the item in the array
 
   const cart = await Cart.findOne({ user: req.user._id });
-  if (!cart) {
-    return sendError(res, 404, 'Cart not found');
-  }
+  if (!cart) return sendError(res, 404, 'Cart not found');
 
   const itemIndex = cart.items.findIndex(item => item._id.toString() === itemId);
-  if (itemIndex === -1) {
-    return sendError(res, 404, 'Item not found');
+  
+  // Fallback: Agar itemId match na ho, toh productId se try karein
+  const finalIndex = itemIndex > -1 ? itemIndex : cart.items.findIndex(item => item.product.toString() === itemId);
+
+  if (finalIndex === -1) {
+    return sendError(res, 404, 'Item not found in cart');
   }
 
   if (quantity <= 0) {
-    cart.items.splice(itemIndex, 1);
+    cart.items.splice(finalIndex, 1);
   } else {
-    cart.items[itemIndex].quantity = quantity;
+    cart.items[finalIndex].quantity = Number(quantity);
   }
 
-  // Recalculate totals
-  let totalItems = 0;
-  let totalPrice = 0;
-  for (let item of cart.items) {
-    const prod = await Product.findById(item.product);
-    const price = prod?.discountedPrice || prod?.price || 0;
-    totalPrice += price * item.quantity;
-    totalItems += item.quantity;
-  }
-
-  cart.totalItems = totalItems;
-  cart.totalPrice = totalPrice;
   await cart.save();
-
-  await cart.populate('items.product', 'name price discountedPrice images');
+  await cart.populate('items.product', 'name price discountedPrice images stock');
   
   sendSuccess(res, 200, 'Cart updated', cart);
 });
@@ -113,27 +96,15 @@ const removeCartItem = asyncHandler(async (req, res) => {
   const itemId = req.params.itemId;
 
   const cart = await Cart.findOne({ user: req.user._id });
-  if (!cart) {
-    return sendError(res, 404, 'Cart not found');
-  }
+  if (!cart) return sendError(res, 404, 'Cart not found');
 
-  cart.items = cart.items.filter(item => item._id.toString() !== itemId);
+  // Filter out by either sub-item _id or the product ID
+  cart.items = cart.items.filter(item => 
+    item._id.toString() !== itemId && item.product.toString() !== itemId
+  );
 
-  // Recalculate totals
-  let totalItems = 0;
-  let totalPrice = 0;
-  for (let item of cart.items) {
-    const prod = await Product.findById(item.product);
-    const price = prod?.discountedPrice || prod?.price || 0;
-    totalPrice += price * item.quantity;
-    totalItems += item.quantity;
-  }
-
-  cart.totalItems = totalItems;
-  cart.totalPrice = totalPrice;
   await cart.save();
-
-  await cart.populate('items.product', 'name price discountedPrice images');
+  await cart.populate('items.product', 'name price discountedPrice images stock');
   
   sendSuccess(res, 200, 'Item removed', cart);
 });
@@ -141,21 +112,20 @@ const removeCartItem = asyncHandler(async (req, res) => {
 // 5. Clear cart
 const clearCart = asyncHandler(async (req, res) => {
   const cart = await Cart.findOne({ user: req.user._id });
-  if (!cart) {
-    return sendError(res, 404, 'Cart not found');
+  if (cart) {
+    cart.items = [];
+    await cart.save();
   }
-
-  cart.items = [];
-  cart.totalItems = 0;
-  cart.totalPrice = 0;
-  await cart.save();
-
   sendSuccess(res, 200, 'Cart cleared');
 });
 
 // 6. Merge guest cart
 const mergeGuestCart = asyncHandler(async (req, res) => {
-  const { guestItems } = req.body; // [{productId, quantity, size, color}]
+  const { guestItems } = req.body;
+
+  if (!Array.isArray(guestItems)) {
+    return sendError(res, 400, 'Invalid guest items format');
+  }
 
   let cart = await Cart.findOne({ user: req.user._id });
   if (!cart) {
@@ -163,8 +133,8 @@ const mergeGuestCart = asyncHandler(async (req, res) => {
   }
 
   for (let guestItem of guestItems) {
-    const product = await Product.findById(guestItem.productId);
-    if (!product) continue;
+    // Skip if productId is missing
+    if (!guestItem.productId) continue;
 
     const existingItemIndex = cart.items.findIndex(item => 
       item.product.toString() === guestItem.productId &&
@@ -173,32 +143,19 @@ const mergeGuestCart = asyncHandler(async (req, res) => {
     );
 
     if (existingItemIndex > -1) {
-      cart.items[existingItemIndex].quantity += guestItem.quantity;
+      cart.items[existingItemIndex].quantity += Number(guestItem.quantity);
     } else {
       cart.items.push({
         product: guestItem.productId,
-        quantity: guestItem.quantity,
+        quantity: Number(guestItem.quantity),
         size: guestItem.size,
         color: guestItem.color
       });
     }
   }
 
-  // Recalculate totals
-  let totalItems = 0;
-  let totalPrice = 0;
-  for (let item of cart.items) {
-    const prod = await Product.findById(item.product);
-    const price = prod?.discountedPrice || prod?.price || 0;
-    totalPrice += price * item.quantity;
-    totalItems += item.quantity;
-  }
-
-  cart.totalItems = totalItems;
-  cart.totalPrice = totalPrice;
   await cart.save();
-
-  await cart.populate('items.product', 'name price discountedPrice images');
+  await cart.populate('items.product', 'name price discountedPrice images stock');
   
   sendSuccess(res, 200, 'Guest cart merged', cart);
 });
@@ -211,4 +168,3 @@ module.exports = {
   clearCart,
   mergeGuestCart
 };
-

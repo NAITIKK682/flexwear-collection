@@ -1,13 +1,18 @@
 const asyncHandler = require('../utils/asyncHandler');
 const User = require('../models/User');
-const { sendResponse } = require('../utils/apiResponse'); // Assume sendSuccess exists or use res.status().json
+const mongoose = require('mongoose'); // ✅ FIX 1: Mongoose import zaroori hai
+const { sendResponse } = require('../utils/apiResponse'); 
+
+// Note: Agar aapka apiResponse file 'sendError' bhi deta hai, toh use yahan add karein
+// varna main niche standard res.status ka use kar raha hoon safety ke liye.
 
 // Get user addresses
 const getAddresses = asyncHandler(async (req, res) => {
   const addresses = req.user.addresses || [];
-  sendResponse(res, 200, {
+  // ✅ Frontend handles .data.addresses, so sending as data
+  res.status(200).json({
     success: true,
-    addresses
+    data: addresses 
   });
 });
 
@@ -15,12 +20,16 @@ const getAddresses = asyncHandler(async (req, res) => {
 const addAddress = asyncHandler(async (req, res) => {
   const { label, street, city, state, pin, isDefault = false } = req.body;
   
+  if (!street || !city || !pin) {
+     return res.status(400).json({ success: false, message: "Missing required fields" });
+  }
+
   const newAddress = {
     _id: new mongoose.Types.ObjectId(),
-    label,
+    label: label || 'Home',
     street: street.trim(),
     city: city.trim(),
-    state: state.trim(),
+    state: state?.trim() || '',
     pin,
     isDefault
   };
@@ -32,7 +41,7 @@ const addAddress = asyncHandler(async (req, res) => {
   req.user.addresses.push(newAddress);
   await req.user.save();
 
-  sendResponse(res, 201, {
+  res.status(201).json({
     success: true,
     message: 'Address added successfully',
     address: newAddress
@@ -46,12 +55,12 @@ const updateAddress = asyncHandler(async (req, res) => {
   const addressIndex = req.user.addresses.findIndex(addr => addr._id.toString() === id);
 
   if (addressIndex === -1) {
-    return sendError(res, 404, 'Address not found');
+    return res.status(404).json({ success: false, message: 'Address not found' });
   }
 
   const address = req.user.addresses[addressIndex];
 
-  // Update fields
+  // Update fields safely
   if (updates.label) address.label = updates.label;
   if (updates.street !== undefined) address.street = updates.street.trim();
   if (updates.city !== undefined) address.city = updates.city.trim();
@@ -59,7 +68,6 @@ const updateAddress = asyncHandler(async (req, res) => {
   if (updates.pin) address.pin = updates.pin;
   if (updates.isDefault !== undefined) address.isDefault = updates.isDefault;
 
-  // Handle default logic
   if (address.isDefault) {
     req.user.addresses.forEach(addr => addr.isDefault = false);
     address.isDefault = true;
@@ -67,7 +75,7 @@ const updateAddress = asyncHandler(async (req, res) => {
 
   await req.user.save();
 
-  sendResponse(res, 200, {
+  res.status(200).json({
     success: true,
     message: 'Address updated successfully',
     address
@@ -80,7 +88,7 @@ const deleteAddress = asyncHandler(async (req, res) => {
   const addressIndex = req.user.addresses.findIndex(addr => addr._id.toString() === id);
 
   if (addressIndex === -1) {
-    return sendError(res, 404, 'Address not found');
+    return res.status(404).json({ success: false, message: 'Address not found' });
   }
 
   const wasDefault = req.user.addresses[addressIndex].isDefault;
@@ -92,7 +100,7 @@ const deleteAddress = asyncHandler(async (req, res) => {
 
   await req.user.save();
 
-  sendResponse(res, 200, {
+  res.status(200).json({
     success: true,
     message: 'Address deleted successfully'
   });
@@ -104,22 +112,18 @@ const setDefaultAddress = asyncHandler(async (req, res) => {
 
   const addressIndex = req.user.addresses.findIndex(addr => addr._id.toString() === id);
   if (addressIndex === -1) {
-    return sendError(res, 404, 'Address not found');
+    return res.status(404).json({ success: false, message: 'Address not found' });
   }
 
-  // Set all to false
   req.user.addresses.forEach(addr => addr.isDefault = false);
-  // Set target to true
   req.user.addresses[addressIndex].isDefault = true;
 
   await req.user.save();
 
-  const defaultAddress = req.user.addresses[addressIndex];
-
-  sendResponse(res, 200, {
+  res.status(200).json({
     success: true,
     message: 'Default address updated',
-    defaultAddress
+    defaultAddress: req.user.addresses[addressIndex]
   });
 });
 
@@ -130,4 +134,3 @@ module.exports = {
   deleteAddress,
   setDefaultAddress
 };
-

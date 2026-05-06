@@ -19,7 +19,7 @@ const app = express();
 // Security and parsing middleware
 app.use(helmet());
 
-// ✅ FIXED CORS (MAIN ISSUE SOLVED)
+// ✅ FIXED CORS (Allows frontend to send cookies/headers)
 app.use(cors({
   origin: ["http://localhost:3000", "http://localhost:5173"],
   credentials: true
@@ -59,7 +59,7 @@ app.use('*', (req, res) => {
   });
 });
 
-// Global error handler
+// Global error handler - Must be last
 app.use(errorHandler);
 
 module.exports = app;

@@ -17,6 +17,7 @@ const register = async (userData) => {
 };
 
 const logout = async () => {
+  // We call the backend to invalidate the session if necessary
   const response = await api.post('/auth/logout');
   return response.data;
 };
@@ -36,6 +37,7 @@ const changePassword = async (passwords) => {
   return response.data;
 };
 
+// Exporting as default to match your AuthContext imports
 export default {
   login,
   register,

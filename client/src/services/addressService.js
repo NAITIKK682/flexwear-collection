@@ -20,7 +20,8 @@ const setDefaultAddress = async (id) => {
   return api.patch(`/addresses/${id}/default`);
 };
 
-export default {
+// Exporting both as default and named to prevent import errors in Checkout.jsx
+export const addressService = {
   getAddresses,
   addAddress,
   updateAddress,
@@ -28,3 +29,4 @@ export default {
   setDefaultAddress,
 };
 
+export default addressService;
