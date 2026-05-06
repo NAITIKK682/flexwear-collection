@@ -1,24 +1,23 @@
 # 🛍️ Flexwear — Modern Full-Stack E-Commerce Platform
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org)
-[![Node.js](https://img.shields.io/badge/Node.js-20-green.svg)](https://nodejs.org)
+<p align="center">
+  <b>Production-Ready MERN Stack E-Commerce Application</b><br/>
+  <i>Clean Architecture • Scalable • Real-World Project</i>
+</p>
 
 ---
 
 ## 🚀 Overview
 
-**Flexwear** is a **production-ready full-stack e-commerce platform** built with modern technologies like **React (Vite), Node.js, Express, MongoDB, and TailwindCSS**.
+**Flexwear** is a **full-stack e-commerce web application** built using modern technologies like **React (Vite), Node.js, Express, MongoDB, and TailwindCSS**.
 
-It delivers a **seamless shopping experience** with:
+This project is designed to replicate a **real-world e-commerce system** with:
 
-* Secure authentication
-* Category-based product browsing
-* Cart & checkout flow
-* Razorpay payment integration
-* Admin dashboard
-
-> Designed with scalability, performance, and clean architecture in mind.
+* 🛒 Complete shopping experience
+* 🔐 Secure authentication
+* 💳 Payment integration (Razorpay)
+* 📦 Order management system
+* 🛠️ Admin dashboard
 
 ---
 
@@ -26,34 +25,37 @@ It delivers a **seamless shopping experience** with:
 
 ### 👤 User Features
 
-* Secure **JWT Authentication (Login/Register)**
-* Browse products by **Men / Women / Kids / Accessories**
-* **Search & filter** products
-* Add/remove items from cart
-* **Checkout with Razorpay**
-* Manage **profile & addresses**
-* Track orders
+* JWT-based authentication (Login / Register)
+* Browse products by categories (Men, Women, Kids, Accessories)
+* Product search & filtering
+* Add to cart & manage quantity
+* Checkout with address system
+* Razorpay payment integration
+* Order tracking & history
+
+---
 
 ### 🛠️ Admin Features
 
-* Product CRUD (Create, Read, Update, Delete)
-* Manage users & roles
-* Order management
-* Dashboard insights
+* Product CRUD operations
+* User management
+* Order management dashboard
+
+---
 
 ### 🔐 Security & Performance
 
-* Password hashing (**bcrypt**)
-* Protected routes (JWT middleware)
+* Password hashing using bcrypt
+* Protected routes with JWT middleware
 * Rate limiting & API security
-* Optimized builds via **Vite**
-* MongoDB indexing for fast queries
+* Fast builds with Vite
+* MongoDB indexing
 
 ---
 
 ## 🧱 Tech Stack
 
-### 🎨 Frontend
+### Frontend
 
 * React 18 + Vite
 * TailwindCSS
@@ -61,222 +63,239 @@ It delivers a **seamless shopping experience** with:
 * Axios
 * React Hot Toast
 * Zod Validation
-* Context API + Hooks
+* Context API
 
-### ⚙️ Backend
+### Backend
 
 * Node.js + Express
 * MongoDB + Mongoose
 * JWT Authentication
 * Cloudinary (image uploads)
 * Razorpay (payments)
-* Multer (file handling)
-
-### 🧰 Tools
-
-* ESLint + Prettier
-* Nodemon
-* Helmet + Rate Limiter
-* Express Validator
+* Multer
 
 ---
 
-## 📁 Project Structure
-
-### 📦 Root
+## 🧠 Architecture
 
 ```
+Frontend (React)
+   ↓
+API Layer (Axios Services)
+   ↓
+Backend (Express)
+   ↓
+Database (MongoDB)
+   ↓
+External Services (Cloudinary, Razorpay)
+```
+
+---
+
+## 📁 Complete Folder Structure
+
+```bash
 FLEXWEAR/
-├── client/     # Frontend (React)
-├── server/     # Backend (Node + Express)
+│
+├── client/                          # 🎨 Frontend
+│   ├── public/
+│   │   ├── images/
+│   │   │   └── hero.png
+│   │   └── vite.svg
+│   │
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   ├── index.css
+│   │
+│   │   ├── assets/
+│   │   │   └── images/
+│   │   │       └── placeholder.jpg
+│   │
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   │   ├── Loader.jsx
+│   │   │   │   ├── Toast.jsx
+│   │   │   │   └── index.js
+│   │   │   │
+│   │   │   ├── cart/
+│   │   │   │   ├── CartItem.jsx
+│   │   │   │   └── CartSummary.jsx
+│   │   │   │
+│   │   │   ├── layout/
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── ProtectedRoute.jsx
+│   │   │   │   └── index.js
+│   │   │   │
+│   │   │   ├── product/
+│   │   │   │   ├── ProductCard.jsx
+│   │   │   │   ├── ProductGrid.jsx
+│   │   │   │   └── ProductFilter.jsx
+│   │   │   │
+│   │   │   └── ProtectedRoute.jsx
+│   │
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── CartContext.jsx
+│   │
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js
+│   │   │   └── useCart.js
+│   │
+│   │   ├── pages/
+│   │   │   ├── Admin/
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── ProductManagement.jsx
+│   │   │   │   ├── OrderManagement.jsx
+│   │   │   │   ├── UserManagement.jsx
+│   │   │   │   └── index.jsx
+│   │   │
+│   │   │   ├── Auth/
+│   │   │   │   ├── Auth.jsx
+│   │   │   │   ├── LoginForm.jsx
+│   │   │   │   ├── RegisterForm.jsx
+│   │   │   │   └── index.jsx
+│   │   │
+│   │   │   ├── Cart/
+│   │   │   │   ├── Cart.jsx
+│   │   │   │   └── index.jsx
+│   │   │
+│   │   │   ├── Checkout/
+│   │   │   │   ├── Checkout.jsx
+│   │   │   │   ├── PaymentGateway.jsx
+│   │   │   │   ├── OrderSuccess.jsx
+│   │   │   │   └── index.jsx
+│   │   │
+│   │   │   ├── Home/
+│   │   │   │   ├── Home.jsx
+│   │   │   │   ├── HeroSection.jsx
+│   │   │   │   ├── Categories.jsx
+│   │   │   │   ├── FeaturedProducts.jsx
+│   │   │   │   ├── Newsletter.jsx
+│   │   │   │   └── index.jsx
+│   │   │
+│   │   │   ├── ProductDetail/
+│   │   │   │   └── index.jsx
+│   │   │
+│   │   │   ├── Profile/
+│   │   │   │   ├── Profile.jsx
+│   │   │   │   ├── Overview.jsx
+│   │   │   │   ├── PersonalDetails.jsx
+│   │   │   │   ├── Addresses.jsx
+│   │   │   │   ├── MyOrders.jsx
+│   │   │   │   ├── OrderDetails.jsx
+│   │   │   │   └── index.jsx
+│   │   │
+│   │   │   └── Shop/
+│   │   │       ├── Shop.jsx
+│   │   │       ├── Men.jsx
+│   │   │       ├── Women.jsx
+│   │   │       ├── Kids.jsx
+│   │   │       ├── Accessories.jsx
+│   │   │       └── index.jsx
+│   │
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   ├── authService.js
+│   │   │   ├── productService.js
+│   │   │   ├── cartService.js
+│   │   │   ├── orderService.js
+│   │   │   ├── paymentService.js
+│   │   │   ├── addressService.js
+│   │   │   └── adminService.js
+│   │
+│   │   └── utils/
+│   │       ├── constants.js
+│   │       ├── formatters.js
+│   │       └── validators.js
+│
+│   ├── index.html
+│   ├── package.json
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   └── vite.config.js
+│
+├── server/                          # ⚙️ Backend
+│   ├── src/
+│   │   ├── app.js
+│   │
+│   │   ├── config/
+│   │   │   ├── database.js
+│   │   │   ├── db.js
+│   │   │   ├── cloudinary.js
+│   │   │   └── jwt.js
+│   │
+│   │   ├── controllers/
+│   │   │   ├── authController.js
+│   │   │   ├── productController.js
+│   │   │   ├── cartController.js
+│   │   │   ├── orderController.js
+│   │   │   ├── paymentController.js
+│   │   │   └── addressController.js
+│   │
+│   │   ├── middleware/
+│   │   │   ├── auth.js
+│   │   │   └── rateLimiter.js
+│   │
+│   │   ├── models/
+│   │   │   ├── User.js
+│   │   │   ├── Product.js
+│   │   │   ├── Cart.js
+│   │   │   ├── Order.js
+│   │   │   ├── Review.js
+│   │   │   └── index.js
+│   │
+│   │   ├── routes/
+│   │   │   ├── auth.routes.js
+│   │   │   ├── product.routes.js
+│   │   │   ├── cart.routes.js
+│   │   │   ├── order.routes.js
+│   │   │   ├── payment.routes.js
+│   │   │   ├── address.routes.js
+│   │   │   └── legacy files
+│   │
+│   │   ├── utils/
+│   │   │   ├── apiResponse.js
+│   │   │   ├── asyncHandler.js
+│   │   │   └── jwt.js
+│   │
+│   │   └── validators/
+│   │       ├── authValidator.js
+│   │       ├── productValidator.js
+│   │       ├── cartValidator.js
+│   │       └── addressValidator.js
+│
+│   ├── server.js
+│   └── package.json
+│
 ├── README.md
 └── package.json
 ```
 
 ---
 
-### 🎨 Client (Frontend)
-
-```
-client/src/
-├── components/
-│   ├── common/        # Loader, Toast
-│   ├── cart/          # Cart UI
-│   ├── layout/        # Navbar, Footer
-│   └── product/       # Product UI
-├── pages/             # All pages (Auth, Cart, Checkout, Admin, etc.)
-├── context/           # Global state (Auth, Cart)
-├── hooks/             # Custom hooks
-├── services/          # API calls
-├── utils/             # Helpers & validators
-```
-
----
-
-### ⚙️ Server (Backend)
-
-```
-server/src/
-├── config/        # DB, Cloudinary, JWT
-├── controllers/   # Business logic
-├── middleware/    # Auth, Rate limiter
-├── models/        # Mongoose schemas
-├── routes/        # API routes
-├── validators/    # Input validation
-└── utils/         # Helpers
-```
-
----
-
-## 📄 Important Files
-
-| File                  | Purpose         |
-| --------------------- | --------------- |
-| `client/src/main.jsx` | App entry point |
-| `client/src/App.jsx`  | Routing setup   |
-| `server/server.js`    | Server start    |
-| `server/src/app.js`   | Express config  |
-| `Product.js`          | Product schema  |
-| `User.js`             | User model      |
-| `auth.routes.js`      | Auth APIs       |
-| `api.js`              | Axios config    |
-| `AuthContext.jsx`     | Auth state      |
-| `auth.js`             | JWT middleware  |
-
----
-
-## ⚡ Installation
-
-### 🔧 Prerequisites
-
-* Node.js (18+)
-* MongoDB Atlas / Local DB
-* Cloudinary account
-* Razorpay account
-
----
-
-### 📥 Setup Steps
-
-#### 1. Clone Repo
+## ⚡ Setup & Run
 
 ```bash
-git clone https://github.com/yourusername/flexwear.git
-cd flexwear
-```
+# Install
+cd server && npm install
+cd ../client && npm install
 
-#### 2. Backend Setup
-
-```bash
-cd server
-npm install
-```
-
-#### 3. Frontend Setup
-
-```bash
-cd client
-npm install
-```
-
----
-
-### 🔑 Environment Variables
-
-#### server/.env
-
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_secret
-
-CLOUDINARY_CLOUD_NAME=xxx
-CLOUDINARY_API_KEY=xxx
-CLOUDINARY_API_SECRET=xxx
-
-RAZORPAY_KEY_ID=xxx
-RAZORPAY_KEY_SECRET=xxx
-```
-
-#### client/.env
-
-```env
-VITE_API_URL=http://localhost:5000/api
-VITE_RAZORPAY_KEY=your_key
-```
-
----
-
-### ▶️ Run Project
-
-```bash
-# Backend
+# Run
 cd server && npm run dev
-
-# Frontend
 cd client && npm run dev
 ```
-
-* Frontend → http://localhost:5173
-* Backend → http://localhost:5000
-
----
-
-## 🔌 API Endpoints
-
-| Method | Endpoint          | Description    |
-| ------ | ----------------- | -------------- |
-| POST   | `/auth/register`  | Register       |
-| POST   | `/auth/login`     | Login          |
-| GET    | `/products`       | Get products   |
-| GET    | `/products/:id`   | Single product |
-| POST   | `/cart`           | Add to cart    |
-| GET    | `/cart`           | Get cart       |
-| POST   | `/orders`         | Create order   |
-| GET    | `/orders`         | User orders    |
-| POST   | `/payment/orders` | Razorpay order |
-
----
-
-## 📸 Screenshots
-
-```md
-![Home](./client/public/images/hero.png)
-![Products](screenshots/product-grid.png)
-![Admin](screenshots/admin-dashboard.png)
-```
-
----
-
-## 🔮 Future Enhancements
-
-* Stripe / PayPal integration
-* Real-time notifications (Socket.io)
-* Wishlist feature
-* Advanced analytics dashboard
-* Elasticsearch search
-* Multi-language support
 
 ---
 
 ## 👨‍💻 Author
 
-**Your Name**
-GitHub: https://github.com/yourusername
-
----
-
-## 📜 License
-
-MIT License © 2026
+**Naitik Kushwaha**
+GitHub: https://github.com/NAITIKK682
 
 ---
 
 ## ⭐ Support
 
-If you like this project:
-
-👉 Star the repo
-👉 Share with others
-
-**Built with ❤️ using MERN Stack**
+If you like this project, give it a ⭐
