@@ -64,14 +64,14 @@ const Footer = () => {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-white border-t border-slate-200" aria-label="Site footer">
+    <footer className="bg-white border-t border-slate-200 overflow-x-hidden" aria-label="Site footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
         
         {/* Main Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
 
           {/* Brand Column */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-1 min-w-0">
             <Link 
               to="/" 
               className="text-xl sm:text-2xl font-semibold text-slate-900 hover:text-indigo-600 transition-colors duration-200"
@@ -94,7 +94,7 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Visit our ${social.label}`}
-                    className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all duration-200"
+                    className="h-11 w-11 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all duration-200 touch-target"
                   >
                     <Icon />
                   </a>
@@ -104,7 +104,7 @@ const Footer = () => {
           </div>
 
           {/* Shop Links */}
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
               Shop
             </p>
@@ -123,7 +123,7 @@ const Footer = () => {
           </div>
 
           {/* Help Links */}
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
               Help
             </p>
@@ -142,26 +142,26 @@ const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
               Contact
             </p>
             <ul className="space-y-3 text-sm text-slate-600">
               <li className="flex items-start gap-2">
                 <EnvelopeIcon />
-                <a href="mailto:support@flexwear.in" className="hover:text-indigo-600 transition-colors">
+                <a href="mailto:support@flexwear.in" className="hover:text-indigo-600 transition-colors break-all">
                   support@flexwear.in
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <PhoneIcon />
                 <a href="tel:+919876543210" className="hover:text-indigo-600 transition-colors">
-                  +91 98765 43210
+                  +91 8948866980
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPinIcon />
-                <span>Mumbai, India</span>
+                <span className="break-words">Mumbai, India</span>
               </li>
             </ul>
           </div>
@@ -169,9 +169,9 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="mt-10 pt-6 border-t border-slate-200">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-400">
+          <div className="flex flex-wrap justify-center sm:justify-between items-center gap-3 text-xs text-slate-400 text-center sm:text-left">
             <p>© {year} Flexwear. All rights reserved.</p>
-            <p className="text-slate-300">|</p>
+            <p className="text-slate-300 hidden sm:block">|</p>
             <p>
               Designed & developed by{' '}
               <a 

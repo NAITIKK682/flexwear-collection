@@ -163,6 +163,13 @@ const HeroSection = () => {
               </Link>
 
               <Link
+                to="/kids"
+                className="btn-outline inline-flex items-center justify-center gap-2 border-2 border-transparent text-indigo-600 px-7 py-3.5 rounded-full text-sm font-semibold hover:border-indigo-100 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2"
+              >
+                Kids
+              </Link>
+
+              <Link
                 to="/accessories"
                 className="btn-outline inline-flex items-center justify-center gap-2 border-2 border-transparent text-indigo-600 px-7 py-3.5 rounded-full text-sm font-semibold hover:border-indigo-100 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2"
               >
@@ -172,8 +179,8 @@ const HeroSection = () => {
           </div>
 
           {/* ── IMAGE SECTION ──────────────────────────────────────────────── */}
-          <div className="w-full lg:w-7/12 flex justify-center lg:justify-end">
-            <div className="relative w-full flex justify-center">
+          <div className="w-full lg:w-7/12 flex justify-center lg:justify-center xl:justify-end">
+            <div className="relative w-full flex justify-center items-center">
 
               {/* Glow halo behind image */}
               <div

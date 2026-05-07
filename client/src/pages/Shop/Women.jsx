@@ -368,14 +368,23 @@ export default function Women() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
-      <section className="relative h-[60vh] sm:h-[70vh] min-h-[500px] bg-gradient-to-br from-rose-400 via-pink-500 to-purple-600 flex items-center justify-center overflow-hidden">
+      <section className="relative h-[60vh] sm:h-[70vh] min-h-[500px] overflow-hidden flex items-center justify-center">
+        {/* Background image */}
+        <img
+          src={WOMEN_IMAGES.hero}
+          alt="Women's Collection"
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+          decoding="async"
+        />
+        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-slate-50" />
+
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <Badge variant="secondary" className="mb-4 bg-white/90 text-rose-600">New Collection 2024</Badge>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 tracking-tight">Women's Collection</h1>
-          <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-2xl mx-auto">Discover elegance, comfort, and style. Shop the latest trends in women's fashion.</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#FDF6E3] mb-4 tracking-tight pl-1 mt-6">Women's Collection</h1>
+          <p className="text-lg sm:text-xl text-[#FBF3D5]/90 mb-8 max-w-2xl mx-auto pl-1">Discover elegance, comfort, and style. Shop the latest trends in women's fashion.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="#shop" className="inline-flex items-center justify-center px-8 py-4 bg-white text-rose-600 font-semibold rounded-full hover:bg-rose-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">Shop Now</a>
+            <a href="#shop" className="inline-flex items-center justify-center px-8 py-4 bg-[#FDF6E3] text-rose-600 font-semibold rounded-full hover:bg-[#FFF2C2] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">Shop Now</a>
             <Button variant="secondary" size="lg" onClick={() => sectionRefs.current['trending']?.scrollIntoView({ behavior: 'smooth' })}>Explore Categories</Button>
           </div>
         </div>

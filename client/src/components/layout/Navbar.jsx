@@ -102,7 +102,8 @@ const Navbar = memo(() => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false)
       }
-      if (mobileRef.current && !mobileRef.current.contains(event.target)) {
+      // FIX: Exclude hamburger toggle button from outside-click close logic
+      if (mobileRef.current && !mobileRef.current.contains(event.target) && !event.target.closest('[aria-controls="mobile-menu"]')) {
         setIsMobileOpen(false)
       }
     }
@@ -252,8 +253,8 @@ const Navbar = memo(() => {
           to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes mobileSlideIn {
-          from { opacity: 0; transform: translateX(12px); }
-          to   { opacity: 1; transform: translateX(0); }
+          from { opacity: 0; transform: translateY(-4px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes dropdownFade {
           from { opacity: 0; transform: translateY(4px) scale(0.98); }
@@ -455,7 +456,7 @@ const Navbar = memo(() => {
                       ref={firstDropdownItemRef}
                       role="menu"
                       aria-label="Account options"
-                      className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-100 py-1.5 z-50 overflow-hidden focus:outline-none"
+                      className="absolute right-0 mt-2 w-56 max-w-[95vw] bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-100 py-1.5 z-50 overflow-hidden focus:outline-none"
                       style={{ 
                         animation: 'dropdownFade 150ms var(--nav-animation-easing) forwards',
                         willChange: 'opacity, transform'
@@ -537,13 +538,14 @@ const Navbar = memo(() => {
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation menu"
-            className="md:hidden bg-white border-t border-slate-100 shadow-lg shadow-slate-200/30"
+            className="md:hidden bg-white border-t border-slate-100 shadow-lg shadow-slate-200/30 overflow-x-hidden"
             style={{ 
               animation: 'mobileSlideIn 180ms var(--nav-animation-easing) forwards',
               willChange: 'transform, opacity'
             }}
           >
-            <div className="px-4 pt-3 pb-5 space-y-1 max-w-7xl mx-auto">
+            {/* FIX: Changed from max-w-7xl mx-auto to w-full px-4 for proper mobile containment */}
+            <div className="w-full px-4 pt-3 pb-5 space-y-1">
               {NAV_LINKS.map(({ to, label }, index) => (
                 <NavLink
                   key={to}
